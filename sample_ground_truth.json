@@ -1,0 +1,32 @@
+{
+  "test_papers/paper1.pdf": {
+    "decision": "Accept",
+    "conference": "NeurIPS",
+    "originality_score": 95,
+    "plagiarism_flag": "No"
+  },
+  "test_papers/paper2.pdf": {
+    "decision": "Reject",
+    "conference": "N/A",
+    "originality_score": 30,
+    "plagiarism_flag": "Yes"
+  },
+  "test_papers/paper3.pdf": {
+    "decision": "Needs Revision",
+    "conference": "ICML",
+    "originality_score": 75,
+    "plagiarism_flag": "No"
+  },
+  "test_papers/paper4.pdf": {
+    "decision": "Accept",
+    "conference": "ICLR",
+    "originality_score": 90,
+    "plagiarism_flag": "No"
+  },
+  "test_papers/paper5.pdf": {
+    "decision": "Reject",
+    "conference": "N/A",
+    "originality_score": 25,
+    "plagiarism_flag": "Yes"
+  }
+} 

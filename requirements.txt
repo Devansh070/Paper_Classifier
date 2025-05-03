@@ -1,0 +1,14 @@
+networkx==3.1
+pypdf==3.17.1
+python-dotenv==1.0.0
+transformers==4.35.0
+torch==2.1.0
+numpy==1.24.3
+matplotlib==3.7.1
+tqdm==4.65.0
+python-Levenshtein==0.21.1
+scikit-learn==1.2.2
+sentencepiece==0.1.99
+requests==2.31.0
+accelerate==0.25.0
+bitsandbytes==0.41.1 
