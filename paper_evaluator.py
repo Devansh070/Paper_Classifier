@@ -152,73 +152,48 @@ def validate_json_output(text: str, pattern_key: str) -> Optional[Dict]:
     
     return None
 
+from transformers import AutoTokenizer, AutoModel
+import torch
+from sklearn.metrics.pairwise import cosine_similarity
+
+def load_distilbert_model():
+    """Load DistilBERT model and tokenizer if not already cached."""
+    if MODEL_CACHE.get("distilbert_model") is None or MODEL_CACHE.get("distilbert_tokenizer") is None:
+        tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
+        model = AutoModel.from_pretrained("distilbert-base-uncased")
+        model.eval()
+        MODEL_CACHE["distilbert_model"] = model
+        MODEL_CACHE["distilbert_tokenizer"] = tokenizer
+
 def calculate_claim_similarity(claim1: str, claim2: str) -> float:
     """
-    Calculate similarity between two claims using ColBERT-style retrieval.
-    
-    Args:
-        claim1: First claim to compare
-        claim2: Second claim to compare
-        
-    Returns:
-        Similarity score between 0 and 1
+    Calculate similarity between two claims using DistilBERT embeddings and cosine similarity.
     """
-    # Check cache first
     cache_key = f"similarity_{hash(claim1)}_{hash(claim2)}"
     if cache_key in MODEL_CACHE["retriever_cache"]:
         return MODEL_CACHE["retriever_cache"][cache_key]
-    
+
     try:
-        # Use ColBERT if available
-        if MODEL_CACHE["colbert"] is not None and MODEL_CACHE["colbert_index"] is not None:
-            # Tokenize claims
-            searcher = MODEL_CACHE["colbert"]
-            
-            tokens1 = searcher.tokenizer(claim1, padding=True, truncation=True, max_length=512, return_tensors="pt")
-            tokens2 = searcher.tokenizer(claim2, padding=True, truncation=True, max_length=512, return_tensors="pt")
-            
-            # Get embeddings
-            with torch.no_grad():
-                emb1 = searcher.model(**tokens1).last_hidden_state.mean(dim=1)
-                emb2 = searcher.model(**tokens2).last_hidden_state.mean(dim=1)
-            
-            # Calculate similarity using dot product (ColBERT style)
-            similarity = torch.mm(emb1, emb2.t()).squeeze().cpu().numpy()
-            
-            # Cache result
-            MODEL_CACHE["retriever_cache"][cache_key] = float(similarity)
-            return float(similarity)
-        
-        # Fallback to sentence transformer if available
-        elif MODEL_CACHE["sentence_transformer"] is not None:
-            model = MODEL_CACHE["sentence_transformer"]
-            
-            # Encode claims
-            emb1 = model.encode(claim1, convert_to_tensor=True)
-            emb2 = model.encode(claim2, convert_to_tensor=True)
-            
-            # Calculate cosine similarity
-            similarity = torch.nn.functional.cosine_similarity(emb1.unsqueeze(0), emb2.unsqueeze(0)).cpu().numpy()
-            
-            # Cache result
-            MODEL_CACHE["retriever_cache"][cache_key] = float(similarity)
-            return float(similarity)
-        
-        # Last resort: use TF-IDF
-        else:
-            vectorizer = TfidfVectorizer()
-            tfidf_matrix = vectorizer.fit_transform([claim1, claim2])
-            similarity = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0][0]
-            
-            # Cache result
-            MODEL_CACHE["retriever_cache"][cache_key] = float(similarity)
-            return float(similarity)
-            
+        load_distilbert_model()
+        tokenizer = MODEL_CACHE["distilbert_tokenizer"]
+        model = MODEL_CACHE["distilbert_model"]
+
+        # Tokenize and encode the sentences
+        tokens = tokenizer([claim1, claim2], padding=True, truncation=True, return_tensors="pt")
+        with torch.no_grad():
+            outputs = model(**tokens)
+            embeddings = outputs.last_hidden_state.mean(dim=1)  # Mean pooling
+
+        emb1, emb2 = embeddings[0].unsqueeze(0), embeddings[1].unsqueeze(0)
+        similarity = cosine_similarity(emb1.cpu(), emb2.cpu())[0][0]
+
+        # Cache and return
+        MODEL_CACHE["retriever_cache"][cache_key] = float(similarity)
+        return float(similarity)
+
     except Exception as e:
         print(f"Error calculating claim similarity: {e}")
-        # Return a default similarity score
         return 0.5
-
 def deduplicate_claims(claims: List[Dict], similarity_threshold: float = 0.7) -> List[Dict]:
     """Deduplicate claims based on semantic similarity."""
     if not claims:
@@ -553,18 +528,13 @@ class PaperEvaluator:
     A system to evaluate research papers for publishability and recommend conferences.
     """
     
-    def __init__(self, model_type: str = "simulated", max_workers: int = 4):
-        """
-        Initialize the paper evaluator.
-        
-        Args:
-            model_type: The type of model to use ("huggingface", "local", or "simulated")
-            max_workers: Maximum number of parallel workers for processing
-        """
+    def __init__(self, model_type: str = "simulated", training_papers: List[Dict[str, Any]] = None, max_workers: int = 4):
         self.conferences = ["NeurIPS", "ICML", "ICLR", "AAAI", "ACL"]
         self.model_type = model_type
         self.max_workers = max_workers
-        
+
+        self.training_papers = training_papers or []
+
         # Initialize sentence transformer as fallback
         try:
             if MODEL_CACHE["sentence_transformer"] is None:

@@ -1,0 +1,170 @@
+{
+  "test_results": [
+    {
+      "file_path": "train_papers\\R001.pdf",
+      "evaluation": {
+        "originality_score": 100.0,
+        "plagiarism_flag": "No",
+        "best_reasoning_path": "\n        {\n            \"is_redundant\": false,\n            \"similar_paper_title\": \"A Related Paper from 2022\",\n            \"similarity_score\": 0.35\n        }\n        ",
+        "decision": "Needs Revision",
+        "reason": "Paper has potential but needs significant improvements",
+        "recommended_conference": "ICLR"
+      }
+    },
+    {
+      "file_path": "train_papers\\R002.pdf",
+      "evaluation": {
+        "originality_score": 100.0,
+        "plagiarism_flag": "No",
+        "best_reasoning_path": "\n        {\n            \"is_redundant\": false,\n            \"similar_paper_title\": \"A Related Paper from 2022\",\n            \"similarity_score\": 0.35\n        }\n        ",
+        "decision": "Needs Revision",
+        "reason": "Paper has potential but needs significant improvements",
+        "recommended_conference": "ICLR"
+      }
+    },
+    {
+      "file_path": "train_papers\\R003.pdf",
+      "evaluation": {
+        "originality_score": 100.0,
+        "plagiarism_flag": "No",
+        "best_reasoning_path": "\n        {\n            \"is_redundant\": false,\n            \"similar_paper_title\": \"A Related Paper from 2022\",\n            \"similarity_score\": 0.35\n        }\n        ",
+        "decision": "Needs Revision",
+        "reason": "Paper has potential but needs significant improvements",
+        "recommended_conference": "NeurIPS"
+      }
+    },
+    {
+      "file_path": "train_papers\\R004.pdf",
+      "evaluation": {
+        "originality_score": 100.0,
+        "plagiarism_flag": "No",
+        "best_reasoning_path": "\n        {\n            \"is_redundant\": false,\n            \"similar_paper_title\": \"A Related Paper from 2022\",\n            \"similarity_score\": 0.35\n        }\n        ",
+        "decision": "Needs Revision",
+        "reason": "Paper has potential but needs significant improvements",
+        "recommended_conference": "ICML"
+      }
+    },
+    {
+      "file_path": "train_papers\\R005.pdf",
+      "evaluation": {
+        "originality_score": 100.0,
+        "plagiarism_flag": "No",
+        "best_reasoning_path": "\n        {\n            \"is_redundant\": false,\n            \"similar_paper_title\": \"A Related Paper from 2022\",\n            \"similarity_score\": 0.35\n        }\n        ",
+        "decision": "Needs Revision",
+        "reason": "Paper has potential but needs significant improvements",
+        "recommended_conference": "AAAI"
+      }
+    },
+    {
+      "file_path": "train_papers\\R006.pdf",
+      "evaluation": {
+        "originality_score": 100.0,
+        "plagiarism_flag": "No",
+        "best_reasoning_path": "\n        {\n            \"is_redundant\": false,\n            \"similar_paper_title\": \"A Related Paper from 2022\",\n            \"similarity_score\": 0.35\n        }\n        ",
+        "decision": "Needs Revision",
+        "reason": "Paper has potential but needs significant improvements",
+        "recommended_conference": "ICML"
+      }
+    },
+    {
+      "file_path": "train_papers\\R007.pdf",
+      "evaluation": {
+        "originality_score": 100.0,
+        "plagiarism_flag": "No",
+        "best_reasoning_path": "\n        {\n            \"is_redundant\": false,\n            \"similar_paper_title\": \"A Related Paper from 2022\",\n            \"similarity_score\": 0.35\n        }\n        ",
+        "decision": "Needs Revision",
+        "reason": "Paper has potential but needs significant improvements",
+        "recommended_conference": "NeurIPS"
+      }
+    },
+    {
+      "file_path": "train_papers\\R008.pdf",
+      "evaluation": {
+        "originality_score": 100.0,
+        "plagiarism_flag": "No",
+        "best_reasoning_path": "\n        {\n            \"is_redundant\": false,\n            \"similar_paper_title\": \"A Related Paper from 2022\",\n            \"similarity_score\": 0.35\n        }\n        ",
+        "decision": "Needs Revision",
+        "reason": "Paper has potential but needs significant improvements",
+        "recommended_conference": "ICLR"
+      }
+    },
+    {
+      "file_path": "train_papers\\R009.pdf",
+      "evaluation": {
+        "originality_score": 100.0,
+        "plagiarism_flag": "No",
+        "best_reasoning_path": "\n        {\n            \"is_redundant\": false,\n            \"similar_paper_title\": \"A Related Paper from 2022\",\n            \"similarity_score\": 0.35\n        }\n        ",
+        "decision": "Needs Revision",
+        "reason": "Paper has potential but needs significant improvements",
+        "recommended_conference": "NeurIPS"
+      }
+    },
+    {
+      "file_path": "train_papers\\R010.pdf",
+      "evaluation": {
+        "originality_score": 100.0,
+        "plagiarism_flag": "No",
+        "best_reasoning_path": "\n        {\n            \"is_redundant\": false,\n            \"similar_paper_title\": \"A Related Paper from 2022\",\n            \"similarity_score\": 0.35\n        }\n        ",
+        "decision": "Needs Revision",
+        "reason": "Paper has potential but needs significant improvements",
+        "recommended_conference": "AAAI"
+      }
+    },
+    {
+      "file_path": "train_papers\\R011.pdf",
+      "evaluation": {
+        "originality_score": 100.0,
+        "plagiarism_flag": "No",
+        "best_reasoning_path": "\n        {\n            \"claims\": [\n                {\n                    \"claim\": \"This paper introduces a novel approach to machine learning\",\n                    \"importance\": \"high\",\n                    \"novelty\": \"high\",\n                    \"evidence\": \"Experimental results show 15% improvement over baseline\",\n                    \"impact\": \"Could revolutionize the field of AI\"\n                },\n                {\n                    \"claim\": \"The proposed method is computationally efficient\",\n                    \"importance\": \"medium\",\n                    \"novelty\": \"medium\",\n                    \"evidence\": \"Runtime analysis shows O(n log n) complexity\",\n                    \"impact\": \"Enables deployment on resource-constrained devices\"\n                }\n            ]\n        }\n        ",
+        "decision": "Needs Revision",
+        "reason": "Paper has potential but needs significant improvements",
+        "recommended_conference": "ICLR"
+      }
+    },
+    {
+      "file_path": "train_papers\\R012.pdf",
+      "evaluation": {
+        "originality_score": 100.0,
+        "plagiarism_flag": "No",
+        "best_reasoning_path": "\n        {\n            \"is_redundant\": false,\n            \"similar_paper_title\": \"A Related Paper from 2022\",\n            \"similarity_score\": 0.35\n        }\n        ",
+        "decision": "Needs Revision",
+        "reason": "Paper has potential but needs significant improvements",
+        "recommended_conference": "ACL"
+      }
+    },
+    {
+      "file_path": "train_papers\\R013.pdf",
+      "evaluation": {
+        "originality_score": 100.0,
+        "plagiarism_flag": "No",
+        "best_reasoning_path": "\n        {\n            \"is_redundant\": false,\n            \"similar_paper_title\": \"A Related Paper from 2022\",\n            \"similarity_score\": 0.35\n        }\n        ",
+        "decision": "Needs Revision",
+        "reason": "Paper has potential but needs significant improvements",
+        "recommended_conference": "ICML"
+      }
+    },
+    {
+      "file_path": "train_papers\\R014.pdf",
+      "evaluation": {
+        "originality_score": 100.0,
+        "plagiarism_flag": "No",
+        "best_reasoning_path": "\n        {\n            \"is_redundant\": false,\n            \"similar_paper_title\": \"A Related Paper from 2022\",\n            \"similarity_score\": 0.35\n        }\n        ",
+        "decision": "Needs Revision",
+        "reason": "Paper has potential but needs significant improvements",
+        "recommended_conference": "ACL"
+      }
+    },
+    {
+      "file_path": "train_papers\\R015.pdf",
+      "evaluation": {
+        "originality_score": 100.0,
+        "plagiarism_flag": "No",
+        "best_reasoning_path": "\n        {\n            \"is_redundant\": false,\n            \"similar_paper_title\": \"A Related Paper from 2022\",\n            \"similarity_score\": 0.35\n        }\n        ",
+        "decision": "Needs Revision",
+        "reason": "Paper has potential but needs significant improvements",
+        "recommended_conference": "ACL"
+      }
+    }
+  ],
+  "metrics": {}
+}

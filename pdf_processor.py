@@ -14,19 +14,26 @@ class PDFProcessor:
     Process PDF files and evaluate the paper evaluator model.
     """
     
-    def __init__(self, train_dir: str, test_dir: str, model_type: str = "simulated"):
-        """
-        Initialize the PDF processor.
-        
-        Args:
-            train_dir: Directory containing training PDF files
-            test_dir: Directory containing test PDF files
-            model_type: Type of model to use for evaluation
-        """
-        self.train_dir = Path(train_dir)
-        self.test_dir = Path(test_dir)
+    def __init__(self, papers_dir: str, model_type: str = "simulated"):
+        self.papers_dir = Path(papers_dir)
         self.model_type = model_type
-        self.evaluator = PaperEvaluator(model_type=model_type)
+
+        if not self.papers_dir.exists():
+            raise FileNotFoundError(f"Directory not found: {self.papers_dir}")
+
+        print(f"Loading training papers from: {self.papers_dir}")
+        self.training_papers = self.process_pdf_files(self.papers_dir)
+
+        try:
+            self.evaluator = PaperEvaluator(
+                model_type=model_type,
+                training_papers=self.training_papers  # ← key addition
+            )
+            print(f"Initialized PaperEvaluator with model type: {model_type}")
+        except Exception as e:
+            print(f"ERROR initializing PaperEvaluator: {str(e)}")
+            raise
+
         
     def extract_text_from_pdf(self, pdf_path: Path) -> str:
         """
@@ -48,28 +55,25 @@ class PDFProcessor:
             print(f"Error extracting text from {pdf_path}: {e}")
             return ""
     
-    def process_pdf_files(self, directory: Path) -> List[Dict[str, Any]]:
-        """
-        Process all PDF files in a directory.
-        
-        Args:
-            directory: Directory containing PDF files
-            
-        Returns:
-            List of dictionaries with file paths and extracted text
-        """
-        pdf_files = list(directory.glob("*.pdf"))
-        results = []
-        
-        for pdf_path in pdf_files:
-            text = self.extract_text_from_pdf(pdf_path)
-            if text:
-                results.append({
+    def process_pdf_files(self, directory):
+        papers = []
+        pdf_dir = Path(directory)
+
+        for pdf_path in pdf_dir.glob("*.pdf"):
+            try:
+                extracted_text = self.extract_text_from_pdf(pdf_path)
+                papers.append({
+                    "text": extracted_text,
                     "file_path": str(pdf_path),
-                    "text": text
+                    "title": pdf_path.stem,  # Using filename as placeholder
+                    "abstract": "",           # TODO: Implement abstract extraction
+                    "claims": []              # TODO: Implement claim extraction
                 })
-        
-        return results
+            except Exception as e:
+                print(f"Failed to process {pdf_path.name}: {e}")
+
+        return papers
+
     
     def evaluate_papers(self, papers: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
@@ -178,17 +182,17 @@ class PDFProcessor:
         Returns:
             Dictionary with evaluation results and metrics
         """
-        # Process training papers
-        print("Processing training papers...")
-        train_papers = self.process_pdf_files(self.train_dir)
+        # Process all papers
+        print("Processing papers...")
+        papers = self.process_pdf_files(self.papers_dir)
         
-        # Process test papers
-        print("Processing test papers...")
-        test_papers = self.process_pdf_files(self.test_dir)
+        if not papers:
+            print("No papers were successfully processed. Stopping evaluation.")
+            return {"test_results": [], "metrics": {}}
         
-        # Evaluate test papers
-        print("Evaluating test papers...")
-        test_results = self.evaluate_papers(test_papers)
+        # Evaluate papers
+        print("Evaluating papers...")
+        evaluation_results = self.evaluate_papers(papers)
         
         # Load ground truth if available
         ground_truth = {}
@@ -196,16 +200,24 @@ class PDFProcessor:
             ground_truth = self.load_ground_truth(ground_truth_file)
         
         # Calculate metrics
-        metrics = self.calculate_metrics(test_results, ground_truth)
+        metrics = self.calculate_metrics(evaluation_results, ground_truth)
         
         # Save results
         output = {
-            "test_results": test_results,
+            "test_results": evaluation_results,
             "metrics": metrics
         }
         
-        with open("evaluation_results.json", "w") as f:
-            json.dump(output, f, indent=2)
+        # Debug output to verify the data before saving
+        print(f"Saving {len(evaluation_results)} evaluation results and {len(metrics)} metrics to evaluation_results.json")
+        
+        try:
+            output_file = "evaluation_results.json"
+            with open(output_file, "w") as f:
+                json.dump(output, f, indent=2)
+            print(f"Successfully saved results to {os.path.abspath(output_file)}")
+        except Exception as e:
+            print(f"Error saving results to evaluation_results.json: {e}")
         
         return output
 
@@ -214,16 +226,18 @@ def main():
     import argparse
     
     parser = argparse.ArgumentParser(description="Process and evaluate research papers in PDF format")
-    parser.add_argument("--train_dir", type=str, default="train_papers", help="Directory containing training PDF files")
-    parser.add_argument("--test_dir", type=str, default="test_papers", help="Directory containing test PDF files")
-    parser.add_argument("--model_type", type=str, default="simulated", choices=["simulated", "huggingface", "local"], 
+    parser.add_argument("--papers_dir", type=str, required=True, 
+                        help="Directory containing PDF papers for both training and testing")
+    parser.add_argument("--model_type", type=str, default="simulated", 
+                        choices=["simulated", "huggingface", "local"], 
                         help="Type of model to use for evaluation")
-    parser.add_argument("--ground_truth", type=str, default=None, help="Path to ground truth JSON file")
+    parser.add_argument("--ground_truth", type=str, default=None, 
+                        help="Path to ground truth JSON file")
     
     args = parser.parse_args()
     
     # Create processor
-    processor = PDFProcessor(args.train_dir, args.test_dir, args.model_type)
+    processor = PDFProcessor(args.papers_dir, args.model_type)
     
     # Run evaluation
     results = processor.run_evaluation(args.ground_truth)
@@ -239,4 +253,4 @@ def main():
     print("\nEvaluation results saved to 'evaluation_results.json'")
 
 if __name__ == "__main__":
-    main() 
+    main()
